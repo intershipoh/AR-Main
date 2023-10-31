@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <title>AR DEMO</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sceneEl = document.querySelector('a-scene');
+            let arSystem;
+
+            sceneEl.addEventListener('loaded', function() {
+                arSystem = sceneEl.systems["mindar-image-system"];
+                console.log("loaded");
+            });
+            const startButton = document.querySelector("#example-start-button");
+            const stopButton = document.querySelector("#example-stop-button");
+
+            startButton.addEventListener('click', () => {
+                console.log("start");
+                arSystem.start(); // start AR 
+            });
+            stopButton.addEventListener('click', () => {
+                arSystem.stop(); // stop AR 
+            });
+
+
+            // arReady event triggered when ready
+            sceneEl.addEventListener("arReady", (event) => {
+                console.log("MindAR is ready")
+            });
+            // arError event triggered when something went wrong. Mostly browser compatbility issue
+            sceneEl.addEventListener("arError", (event) => {
+                console.log("MindAR failed to start")
+            });
+
+        });
+    </script>
+
+
+</head>
+
+<body>
+
+    <div style="position: absolute; z-index: 1000">
+        <button id="example-start-button">Start Camera</button>
+
+        <button id="example-stop-button">Stop Camera</button>
+    </div>
+
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; filterMinCF:0.1; filterBeta: 10; warmupTolerance: 1; missTolerance: 1;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+        <a-assets>
+            <img id="card" src="./images/tee.png" />
+            <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.2/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
+        </a-assets>
+
+        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-entity mindar-image-target="targetIndex: 0">
+            <a-plane color="blue" opaciy="0.5" position="0 0 0" height="1" width="2" rotation="0 0 0"></a-plane>
+            <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"></a-gltf-model>
+        </a-entity>
+    </a-scene>
+
+    <script type="module">
+        import * as THREE from 'three'; import { MindARThree } from 'mindar-image-three';
+    </script>
+</body>
+
+</html>
